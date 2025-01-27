@@ -1,18 +1,41 @@
-// Create the 'basemap' tile layer that will be the background of our map.
-
+// Create the first tile layer that will be the background of our map.
+let smoothTopo = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
 
 // OPTIONAL: Step 2
 // Create the 'street' tile layer as a second background of the map
+let streetmap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
 
+// Create the baseMaps object then add the 'basemap' tile layer to the map.
+let baseMaps = {
+  'Smooth Topographic Map': smoothTopo,
+  'Streetmap View': streetmap
+};
 
 // Create the map object with center and zoom options.
+let myMap = L.map("map", {
+  center: [37.7749, 122.4194],
+  zoom: 3,
+  layers: [earthquakes, tectonicPlates]
+});
 
-
-// Then add the 'basemap' tile layer to the map.
 
 // OPTIONAL: Step 2
-// Create the layer groups, base maps, and overlays for our two sets of data, earthquakes and tectonic_plates.
+// Create the layer groups, and overlays for our two sets of data, earthquakes and tectonic_plates.
 // Add a control to the map that will allow the user to change which layers are visible.
+let earthquakes = L.layerGroup(data);
+let tectonicPlates = L.layerGroup(plate_data);
+let overlayMaps = {
+  'Earthquakes': earthquakes,
+  'Tectonic Plates': tectonicPlates
+};
+
+L.control.layers(baseMaps, overlayMaps, {
+  collapsed: false
+}).addTo(myMap);
 
 
 // Make a request that retrieves the earthquake geoJSON data.
